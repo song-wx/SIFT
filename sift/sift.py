@@ -1,8 +1,9 @@
 import torch
 import torch.nn as nn
 import numpy as np
+import random
 
-class SIFT():
+class SUP():
     def __init__(self, model, sparse_rate, sparse_module, exception=[], grad_acc=1, gradient_checkpointing=False) -> None:
         self.model = model
         self.total_num = 0
@@ -22,6 +23,7 @@ class SIFT():
         self.grad_acc = grad_acc
         
         self.if_get_idx = dict()
+        self.record = dict()
         
         ## Record all the trainable parameters(the initial parameter that need be updated sparsely).
         self.named_trainable_parameters_list = list()
@@ -45,15 +47,18 @@ class SIFT():
                 sparse_param =  nn.Parameter(p.new_zeros(train_num), requires_grad=True)
                 sparse_param.grad = sparse_param.new_zeros(train_num)
                 sparse_param.train_num = train_num
+                
                 ## pick the components that have top-k maximun absolute values 
-                sparse_idx = torch.flatten(abs(p.data)).topk(train_num).indices.cpu().numpy()
+                # sparse_idx = torch.flatten(abs(p.data)).topk(train_num).indices.cpu().numpy()
                 ## Random pick
-                # sparse_idx = np.array(random.sample(list(range(p.numel())), p.train_num), dtype=int) 
+                sparse_idx = np.array(random.sample(list(range(p.numel())), train_num), dtype=int) 
+                
                 sparse_param.idx = np.stack(np.unravel_index(sparse_idx, p.shape))
                 ## help the initial parameter to find the sparse parameter 
                 self.sparse_mapping[n]=sparse_param
                 self.grad_acc_count[n]=0
                 self.if_get_idx[n]=False
+                self.record[n]=[]
                 
                 # ## register a backward hook to get the 'sparse' grad
                 p.register_hook(self.get_sparse_grad())
@@ -135,9 +140,11 @@ class SIFT():
                                 return
 
                             # ##if you are interested in grad proportion, uncomment following code 
-                            # grad_norm = torch.norm(grad)
-                            # sparse_grad_norm = torch.norm(grad[sparse_param.idx])
-                            # print(f"{n} grad proportion: {sparse_grad_norm/grad_norm*100:.2f}")
+                            grad_norm = torch.norm(grad).cpu().numpy().item()
+                            sparse_grad_norm = torch.norm(grad[sparse_param.idx]).cpu().numpy().item()
+                            grad_proportion = sparse_grad_norm/grad_norm*100
+                            self.record[n].append((grad_norm, grad_proportion))
+                            # print(f"{n} grad proportion: {grad_proportion:.2f}")
                                 
                             ## get the sparse grad
                             if sparse_param.grad != None:
@@ -148,7 +155,8 @@ class SIFT():
                             self.grad_acc_count[n] += 1
                             if self.grad_acc_count[n] == (self.grad_acc):
                                 ## update the initial param sparsely
-                                p.data = p.data + torch.sparse_coo_tensor(sparse_param.idx, sparse_param, p.shape).to(p)  
+                                delta = p.data + torch.sparse_coo_tensor(sparse_param.idx, sparse_param, p.shape).to(p)
+                                p.data.copy_(delta)  
                                 sparse_param.zero_()
                                 self.grad_acc_count[n]=0
                                 # print('sparse update!')
