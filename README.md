@@ -72,7 +72,7 @@ no_decay = ["bias", "LayerNorm.weight"]
 optimizer_grouped_parameters = [
             {
                 "params": [p for n, p in sift.named_parameters_in_optimizer() if not any(nd in n for nd in no_decay) ] ,
-                "weight_decay": training_args.weight_decay,
+                "weight_decay": weight_decay,
             },
             {
                 "params": [p for n, p in sift.named_parameters_in_optimizer() if any(nd in n for nd in no_decay) ] ,
@@ -112,7 +112,7 @@ We compare the efficiency of this gradient-based method with [LoRA](https://arxi
 </div>
 
 
-#### Store in a meomory-effient way
+#### Store in a memory-effient way
 Due to SIFT merging `sparse_param` into the original `p` in the hook to ensure the correct forward propagation(as the following codes), the final updated parameters are the original parameters `p`. If you want to store in a memory-effient way, you can store the partial components of `p` with  `sparse_param.idx` otherwise we save the complete `p`.
 ```python
 ## update the initial param sparsely
