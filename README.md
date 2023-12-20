@@ -1,11 +1,13 @@
 # SIFT: Sparse Increment Fine-Tuning
-This is the repository of the paper: \
-[**Sparse is Enough in Fine-tuning Pre-trained Large Language Model**](https://arxiv.org/abs/2312.11875)\
-*Weixi Song\*, Zuchao Li\*, Lefei Zhang, Hai Zhao, Bo Du*
+The repository contains the implementation for the paper: [**Sparse is Enough in Fine-tuning Pre-trained Large Language Model**](https://arxiv.org/abs/2312.11875) and the introduction of the general usage of SIFT in different demands.
+
+**Sparse is Enough in Fine-tuning Pre-trained Large Language Model**<br>
+*Weixi Song\*, Zuchao Li\*, Lefei Zhang, Hai Zhao, Bo Du*\
+Paper: https://arxiv.org/abs/2312.11875
 
 ## Contents
 - [Introduction](#Introduction)
-- [Install](#Intall)
+- [Install](#Install)
 - [Usage](#Usage)
 - [Citation](#Citation)
 
@@ -13,27 +15,24 @@ This is the repository of the paper: \
  
 
 <div align=center>
-  <img src="./assets/implementation.png" alt="implementation" width="60%">
+  <img src="./assets/implementation.png" alt="implementation" width="65%">
 </div>
 
 In this work, we present a compoent-sparse and memory-efficient updating scheme (SIFT). Inspired by the memory-efficient SGD implementation in [LOMO](https://github.com/OpenLMLab/LOMO), we implement a component-sparse updating scheme(SIFT) by injecting hook in the backward propagation. See [our paper](https://arxiv.org/abs/2312.11875) for more details. The main code of SIFT is in [sift.py](./sift/sift.py)
 
-Through this method, for x% sparse updates, we can simultaneously reduce the gradients and optimizer states to the original x%. Combined with techniques such as mixed-precision training and gradient checkpointing, it is able to fine-tune a 7B model on a single RTX 3090 24GB.
+Through this method, for x% sparse updates, we can simultaneously reduce the memory consumption of gradients and optimizer states to the original x%. Combined with techniques such as mixed-precision training and gradient checkpointing, it is able to fine-tune a 7B model on a single RTX 3090 24GB.
 
 <div align=center>
-  <img src="./assets/mem.png" alt="memory comsumption" width="35%">
+  <img src="./assets/mem.png" alt="memory comsumption" width="50%">
 </div>
 
 We provide several use cases in Natural Language Processing and it can be applied to different areas in the same way. See [exp](./exp/) for experiments in GLUE benchmark and the Instruction-tuning task. The experiments are built on the orginal repositories of [Transformers](https://github.com/huggingface/transformers/tree/main/examples/pytorch/text-classification), [Alpaca](https://github.com/tatsu-lab/stanford_alpaca) and [MMLU](https://github.com/hendrycks/test). HumanEval Evaluation is conducted in [code-eval](https://github.com/abacaj/code-eval). Thanks for these great works.
 <div align=center>
-  <img src="./assets/glue.png" alt="glue" width="70%">
+  <img src="./assets/instruction.png" alt="instruction" width="50%">
 </div>
 <div align=center>
-  <img src="./assets/instruction.png" alt="instruction" width="35%">
+  <img src="./assets/glue.png" alt="glue" width="100%">
 </div>
-
-
-
 
 ## Install
 ```bash
@@ -108,7 +107,7 @@ sparse_param.idx = np.stack(np.unravel_index(sparse_idx, p.shape))
 ```
 We compare the efficiency of this gradient-based method with [LoRA](https://arxiv.org/abs/2106.09685) and random selection in different quotas of the trainable parameters. You can modify the above codes in [sift.py](./sift/sift.py) to customize your index selection.
 <div align=center>
-  <img src="./assets/sr.png" alt="efficiency" width="50%">
+  <img src="./assets/sr.png" alt="efficiency" width="60%">
 </div>
 
 
