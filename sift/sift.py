@@ -3,7 +3,7 @@ import torch.nn as nn
 import numpy as np
 import random
 
-class SUP():
+class SIFT():
     def __init__(self, model, sparse_rate, sparse_module, exception=[], grad_acc=1, gradient_checkpointing=False) -> None:
         self.model = model
         self.total_num = 0
