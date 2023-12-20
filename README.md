@@ -12,7 +12,7 @@ This is the repository of the paper: \
 ## Introduction
  
 
-<div style="text-align:center;">
+<div align=center>
   <img src="./assets/implementation.png" alt="implementation" width="60%">
 </div>
 
@@ -20,15 +20,15 @@ In this work, we present a compoent-sparse and memory-efficient updating scheme 
 
 Through this method, for x% sparse updates, we can simultaneously reduce the gradients and optimizer states to the original x%. Combined with techniques such as mixed-precision training and gradient checkpointing, it is able to fine-tune a 7B model on a single RTX 3090 24GB.
 
-<div style="text-align:center;">
+<div align=center>
   <img src="./assets/mem.png" alt="memory comsumption" width="35%">
 </div>
 
 We provide several use cases in Natural Language Processing and it can be applied to different areas in the same way. See [exp](./exp/) for experiments in GLUE benchmark and the Instruction-tuning task. The experiments are built on the orginal repositories of [Transformers](https://github.com/huggingface/transformers/tree/main/examples/pytorch/text-classification), [Alpaca](https://github.com/tatsu-lab/stanford_alpaca) and [MMLU](https://github.com/hendrycks/test). HumanEval Evaluation is conducted in [code-eval](https://github.com/abacaj/code-eval). Thanks for these great works.
-<div style="text-align:center;">
+<div align=center>
   <img src="./assets/glue.png" alt="glue" width="70%">
 </div>
-<div style="text-align:center;">
+<div align=center>
   <img src="./assets/instruction.png" alt="instruction" width="35%">
 </div>
 
@@ -107,7 +107,7 @@ sparse_idx = torch.flatten(abs(grad)).topk(sparse_param.train_num).indices.cpu()
 sparse_param.idx = np.stack(np.unravel_index(sparse_idx, p.shape))
 ```
 We compare the efficiency of this gradient-based method with [LoRA](https://arxiv.org/abs/2106.09685) and random selection in different quotas of the trainable parameters. You can modify the above codes in [sift.py](./sift/sift.py) to customize your index selection.
-<div style="text-align:center;">
+<div align=center>
   <img src="./assets/sr.png" alt="efficiency" width="50%">
 </div>
 
