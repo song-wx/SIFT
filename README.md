@@ -36,7 +36,7 @@ We provide several use cases in Natural Language Processing and it can be applie
 
 
 ## Install
-```
+```bash
 git clone git@github.com:song-wx/SIFT.git
 cd SIFT
 pip install .
@@ -49,7 +49,7 @@ Note: The current implementation only considers training in a single card. If yo
 ### Basic usage
 
 Step 1: After initializing your model, run the following code to specify the parameters that need to be updated sparsely by setting `sparse_module` and `sparse_rate` to customize the sparse training and also you can specify the module to be updated normally by setting `exception`. 
-```
+```python
 ## initialize your model
 model = ...
 
@@ -66,7 +66,7 @@ sift.print_trainable_parameters()
 ```
 
 Step 2: Initialize the optimizer with the actual trainable parameters `sift.named_parameters_in_optimizer()` in SIFT.
-```
+```python
 ## example
 no_decay = ["bias", "LayerNorm.weight"]
 optimizer_grouped_parameters = [
@@ -83,7 +83,7 @@ optimizer_grouped_parameters = [
 optimizer = torch.optim.AdamW(optimizer_grouped_parameters, lr=learning_rate)
 ```
 Step 3: run the training loop normally with `model` and `optimizer`
-```
+```python
 ## if use Trainer
 trainer = Trainer(model=model, optimizer=(optimizer, None), ...)
 trainer.train()
@@ -102,7 +102,7 @@ SIFT essentially creates an additional sparse parameter`sparse_param` for each p
 
 #### Customize the selection of indexes
 In [our paper](https://arxiv.org/abs/2312.11875), we propose a gradient-based selection method based on our finding of the quasi-sparse gradient distribution of the pre-trainde model. We determine the indexes as the components whose absolute gradient of the first few batches are in the top x%.
-```
+```python
 sparse_idx = torch.flatten(abs(grad)).topk(sparse_param.train_num).indices.cpu().numpy() 
 sparse_param.idx = np.stack(np.unravel_index(sparse_idx, p.shape))
 ```
@@ -114,7 +114,7 @@ We compare the efficiency of this gradient-based method with [LoRA](https://arxi
 
 #### Store in a meomory-effient way
 Due to SIFT merging `sparse_param` into the original `p` in the hook to ensure the correct forward propagation(as the following codes), the final updated parameters are the original parameters `p`. If you want to store in a memory-effient way, you can store the partial components of `p` with  `sparse_param.idx` otherwise we save the complete `p`.
-```
+```python
 ## update the initial param sparsely
 delta = p.data + torch.sparse_coo_tensor(sparse_param.idx, sparse_param, p.shape).to(p)
 p.data.copy_(delta)  
