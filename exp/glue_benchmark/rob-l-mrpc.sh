@@ -9,7 +9,7 @@ python run_glue.py \
     --max_seq_length 512 \
     --per_device_train_batch_size 32 \
     --gradient_accumulation_steps 1 \
-    --learning_rate 5e-5 \
+    --learning_rate 7e-5 \
     --num_train_epochs 20 \
     --output_dir ./result/$TASK/roberta-large/ \
     --evaluation_strategy epoch \

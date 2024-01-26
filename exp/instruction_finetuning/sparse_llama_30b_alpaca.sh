@@ -17,7 +17,7 @@ python train.py \
     --save_strategy "steps" \
     --save_steps 2000 \
     --save_total_limit 1 \
-    --learning_rate 2e-4 \
+    --learning_rate 8e-5 \
     --weight_decay 0.01 \
     --warmup_ratio 0.03 \
     --finetuning_type "sup" \

@@ -18,7 +18,7 @@ deepspeed --num_gpus=4 --master_port=6000 train.py \
     --save_strategy "steps" \
     --save_steps 20000 \
     --save_total_limit 1 \
-    --learning_rate 2e-4 \
+    --learning_rate 1e-4 \
     --weight_decay 0 \
     --warmup_ratio 0.03 \
     --finetuning_type "lora" \
