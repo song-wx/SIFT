@@ -1,7 +1,9 @@
 # SIFT: Sparse Increment Fine-Tuning
-The repository contains the implementation for the paper: [**Sparse is Enough in Fine-tuning Pre-trained Large Language Model**](https://arxiv.org/abs/2312.11875) and the introduction of the general usage of SIFT in different demands.
+The repository contains the implementation for the paper: [**Sparse is Enough in Fine-tuning Pre-trained Large Language Models**](https://arxiv.org/abs/2312.11875) and the introduction of the general usage of SIFT in different demands.
 
-**Sparse is Enough in Fine-tuning Pre-trained Large Language Model**<br>
+Our paper is accepted at ICML 2024. Congratulations!
+
+**Sparse is Enough in Fine-tuning Pre-trained Large Language Models**<br>
 *Weixi Song\*, Zuchao Li\*, Lefei Zhang, Hai Zhao, Bo Du*\
 Paper: https://arxiv.org/abs/2312.11875
 
