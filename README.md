@@ -1,7 +1,5 @@
-# SIFT: Sparse Increment Fine-Tuning
+# [ICML 2024 Spotlight] SIFT: Sparse Increment Fine-Tuning
 The repository contains the implementation for the paper: [**Sparse is Enough in Fine-tuning Pre-trained Large Language Models**](https://arxiv.org/abs/2312.11875) and the introduction of the general usage of SIFT in different demands.
-
-Our paper is accepted at ICML 2024. Congratulations!
 
 **Sparse is Enough in Fine-tuning Pre-trained Large Language Models**<br>
 *Weixi Song\*, Zuchao Li\*, Lefei Zhang, Hai Zhao, Bo Du*\
@@ -102,7 +100,7 @@ for i, batch in enumerate(dataloader):
 SIFT essentially creates an additional sparse parameter`sparse_param` for each parameter`p` that needs to be sparsely updated, which is represented in the indexes `sparse_param.idx` and the values `sparse_param.data`. After initializing SIFT, you can get the sparse parameter `sparse_param` of a target parameter `p` with the name `n` by using the dict `sift.sparse_mapping[n]`. 
 
 #### Customize the selection of indexes
-In [our paper](https://arxiv.org/abs/2312.11875), we propose a gradient-based selection method based on our finding of the quasi-sparse gradient distribution of the pre-trainde model. We determine the indexes as the components whose absolute gradient of the first few batches are in the top x%.
+In our paper, we propose a gradient-based selection method based on our finding of the quasi-sparse gradient distribution of the pre-trainde model. We determine the indexes as the components whose absolute gradient of the first few batches are in the top x%.
 ```python
 sparse_idx = torch.flatten(abs(grad)).topk(sparse_param.train_num).indices.cpu().numpy() 
 sparse_param.idx = np.stack(np.unravel_index(sparse_idx, p.shape))
@@ -125,12 +123,12 @@ sparse_param.zero_()
 ## Citation
 
 ```Bibtex
-@misc{song2023sparse,
-      title={Sparse is Enough in Fine-tuning Pre-trained Large Language Model}, 
-      author={Weixi Song and Zuchao Li and Lefei Zhang and Hai Zhao and Bo Du},
-      year={2023},
-      eprint={2312.11875},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
+@inproceedings{
+song2024sparse,
+title={Sparse is Enough in Fine-tuning Pre-trained Large Language Models},
+author={Weixi Song and Zuchao Li and Lefei Zhang and hai zhao and Bo Du},
+booktitle={Forty-first International Conference on Machine Learning},
+year={2024},
+url={https://openreview.net/forum?id=10hu2D3hAg}
 }
 ```
